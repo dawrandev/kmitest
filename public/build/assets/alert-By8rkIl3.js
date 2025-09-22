@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",function(){if(window.laravelFlash){const{type:e,message:n}=window.laravelFlash;Swal.fire({icon:e,title:n,showConfirmButton:e!=="success",timer:e==="success"?2e3:void 0})}});

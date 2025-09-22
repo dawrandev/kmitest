@@ -1,0 +1,75 @@
+{
+  "resources/css/admin/questions/create.css": {
+    "file": "assets/create-CVPwspqh.css",
+    "src": "resources/css/admin/questions/create.css",
+    "isEntry": true
+  },
+  "resources/css/admin/questions/index.css": {
+    "file": "assets/index-CqhDHoD5.css",
+    "src": "resources/css/admin/questions/index.css",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-l0sNRNKZ.js",
+    "name": "app",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/student/home.css": {
+    "file": "assets/home-yGDsWKqX.css",
+    "src": "resources/css/student/home.css",
+    "isEntry": true
+  },
+  "resources/css/student/results.css": {
+    "file": "assets/results-eUEXkqTN.css",
+    "src": "resources/css/student/results.css",
+    "isEntry": true
+  },
+  "resources/css/student/test.css": {
+    "file": "assets/test-CfG0rkH5.css",
+    "src": "resources/css/student/test.css",
+    "isEntry": true
+  },
+  "resources/js/admin/questions/create.js": {
+    "file": "assets/create-kNWclHwn.js",
+    "name": "create",
+    "src": "resources/js/admin/questions/create.js",
+    "isEntry": true
+  },
+  "resources/js/admin/questions/edit.js": {
+    "file": "assets/edit-QpHiZi4Y.js",
+    "name": "edit",
+    "src": "resources/js/admin/questions/edit.js",
+    "isEntry": true
+  },
+  "resources/js/admin/questions/index.js": {
+    "file": "assets/index-C5W2FVt5.js",
+    "name": "index",
+    "src": "resources/js/admin/questions/index.js",
+    "isEntry": true
+  },
+  "resources/js/admin/students/index.js": {
+    "file": "assets/index-DvqUCrlc.js",
+    "name": "index",
+    "src": "resources/js/admin/students/index.js",
+    "isEntry": true
+  },
+  "resources/js/alert.js": {
+    "file": "assets/alert-By8rkIl3.js",
+    "name": "alert",
+    "src": "resources/js/alert.js",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-C0G0cght.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/student/test.js": {
+    "file": "assets/test-BLdIElzJ.js",
+    "name": "test",
+    "src": "resources/js/student/test.js",
+    "isEntry": true
+  }
+}
