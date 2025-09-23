@@ -296,7 +296,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleAnswerResult(questionId, isCorrect, submitBtn) {
         if (testFinished) return;
 
-        // Javob berilgan savolni belgilash
         answeredQuestions.add(questionId);
 
         const navBtn = document.getElementById(`navBtn${questionId}`);
@@ -316,7 +315,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Faqat joriy savol uchun variant-cardlarni bloklash
         const questionContainer = document.getElementById(
             `question-${questionId}`
         );
@@ -346,7 +344,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 isTimerActive = false;
                 finishTest();
             } else if (currentQuestionIndex < questions.length - 1) {
-                // Avtomatik keyingi savolga o'tish
                 currentQuestionIndex++;
                 const nextQuestionId = questions[currentQuestionIndex].id;
                 showQuestion(nextQuestionId, currentQuestionIndex + 1);

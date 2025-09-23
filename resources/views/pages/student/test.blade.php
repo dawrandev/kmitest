@@ -15,15 +15,14 @@
                                         <div class="row align-items-center">
                                             <div class="col-md-6">
                                                 <div class="d-flex align-items-center">
-                                                    <a href="{{ route('student.home') }}" class="btn btn-light me-3">
-                                                        <i data-feather="arrow-left"></i>
-                                                    </a>
                                                     <div>
-                                                        <h5 class="mb-0">{{ __('Autotest') }}</h5>
-                                                        <small class="text-muted">{{ $language->name }}</small>
+                                                        <h5 class="mb-0">{{ __('Test') }}</h5>
+                                                        <small class="text-muted d-block">{{ $language->name }}</small>
+                                                        <small class="fw-bold text-primary d-block">{{ Auth::user()->full_name }}</small>
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-3">
                                                 <div class="text-center">
                                                     <small class="text-muted d-block">{{ __('Question') }}</small>

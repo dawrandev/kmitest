@@ -18,18 +18,6 @@ Route::get('/test', function () {
     return view('pages.student.test');
 })->name('student.test');
 
-Route::post('/form', [\App\Http\Controllers\AuthController::class, 'form'])->name('user.form');
-
-Route::controller(QuestionController::class)->group(function () {
-    Route::get('/questions', 'index')->name('user.questions.index');
-});
-
-Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/templates', [TemplateController::class, 'index'])->name('templates');
-    Route::get('/templates/{template}/start', [TemplateController::class, 'startTest'])->name('templates.start');
-
-    Route::get('/questions', [QuestionController::class, 'index'])->name('questions.index');
-});
 
 Route::controller(TestController::class)->group(function () {
     Route::get('/test', 'index')->name('student.test.start');

@@ -636,7 +636,6 @@ class TestController extends Controller
             $stats['best_score'] = round(max($scores), 2);
             $stats['languages_count'] = $testSessions->pluck('language_id')->unique()->count();
 
-            // So'nggi 5 ta test
             $stats['recent_tests'] = $testSessions->sortByDesc('finished_at')
                 ->take(5)
                 ->map(function ($session) {

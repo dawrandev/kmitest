@@ -32,7 +32,6 @@ class QuestionController extends Controller
                 return view('partials.admin.questions.question_list', compact('questions', 'languages'))->render();
             }
 
-
             return view('pages.admin.questions.index', compact('questions', 'languages'));
         } catch (Exception $e) {
             Log::error('Questions index error: ' . $e->getMessage());
@@ -40,13 +39,12 @@ class QuestionController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Xatolik yuz berdi: ' . $e->getMessage()
+                    'message' => 'An error occurred: ' . $e->getMessage()
                 ], 500);
             }
-            return back()->with('error', 'Xatolik yuz berdi: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-
 
     public function create()
     {
@@ -61,16 +59,15 @@ class QuestionController extends Controller
     public function store(QuestionStoreRequest $request)
     {
         try {
-            // To'g'ridan-to'g'ri request->all() ishlatamiz
+            // Directly using request->all()
             $this->questionService->storeMultipleQuestions($request->all());
 
-            return redirect()->route('admin.questions.index')->with('success', __('Savollar muvaffaqiyatli saqlandi'));
+            return redirect()->route('admin.questions.index')->with('success', __('Questions saved successfully'));
         } catch (Exception $e) {
             Log::error("Question store error: " . $e->getMessage());
-            return back()->with('error', 'Xatolik yuz berdi! ' . $e->getMessage());
+            return back()->with('error', 'An error occurred! ' . $e->getMessage());
         }
     }
-
 
     public function show(string $id, Request $request)
     {
@@ -82,11 +79,11 @@ class QuestionController extends Controller
             if (!$question) {
                 return response()->json([
                     'success' => false,
-                    'message' => __('Savol topilmadi')
+                    'message' => __('Question not found')
                 ], 404);
             }
 
-            // Faqat tanlangan tildagi ma'lumotlarni qaytaramiz
+            // Return only data for the selected language
             $filteredQuestion = [
                 'id' => $question->id,
                 'translation' => $question->translations->where('language_id', $languageId)->first(),
@@ -109,34 +106,31 @@ class QuestionController extends Controller
             Log::error('Question show error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => __('Xatolik yuz berdi: ') . $e->getMessage()
+                'message' => __('An error occurred: ') . $e->getMessage()
             ], 500);
         }
     }
-
 
     public function edit(string $id)
     {
         try {
             $question = $this->questionRepository->findQuestionWithAllTranslationsAndAnswers($id);
-            // return $question;
             if (!$question) {
-                return back()->with('error', 'Savol topilmadi');
+                return back()->with('error', 'Question not found');
             }
 
             $languages = $this->questionRepository->getAllLanguages();
-            // return $languages;
 
             return view('pages.admin.questions.edit', compact('question', 'languages'));
         } catch (Exception $e) {
-            return back()->with('error', 'Xatolik yuz berdi: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
     public function update(Request $request, string $id)
     {
         try {
-            // Request validatsiya (kerak bo'lsa QuestionUpdateRequest yarating)
+            // Request validation (create QuestionUpdateRequest if needed)
             $request->validate([
                 'questions' => 'required|array',
                 'questions.*' => 'required|string|min:3',
@@ -146,15 +140,15 @@ class QuestionController extends Controller
                 'remove_current_image' => 'nullable|in:0,1'
             ]);
 
-            // Har bir til uchun to'g'ri javob borligini tekshirish
+            // Check if each language has a correct answer
             $this->validateCorrectAnswers($request->all());
 
-            // Savolni yangilash
+            // Update the question
             $this->questionService->updateMultipleQuestions((int)$id, $request->all());
 
             return redirect()
                 ->route('admin.questions.index')
-                ->with('success', __('Savol muvaffaqiyatli yangilandi'));
+                ->with('success', __('Question updated successfully'));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()
                 ->withErrors($e->errors())
@@ -163,7 +157,7 @@ class QuestionController extends Controller
             Log::error("Question update error: " . $e->getMessage());
 
             return back()
-                ->with('error', 'Xatolik yuz berdi: ' . $e->getMessage())
+                ->with('error', 'An error occurred: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -174,7 +168,7 @@ class QuestionController extends Controller
     private function validateCorrectAnswers(array $data): void
     {
         if (!isset($data['answers']) || !is_array($data['answers'])) {
-            throw new Exception('Javoblar kiritilmagan');
+            throw new Exception('Answers not provided');
         }
 
         foreach ($data['answers'] as $languageId => $answers) {
@@ -191,10 +185,11 @@ class QuestionController extends Controller
             }
 
             if (!$hasCorrectAnswer) {
-                throw new Exception("Til ID {$languageId} uchun to'g'ri javob tanlanmagan");
+                throw new Exception("No correct answer selected for language ID {$languageId}");
             }
         }
     }
+
     public function destroy(int $id)
     {
         try {
@@ -203,18 +198,18 @@ class QuestionController extends Controller
             if (!$deleted) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Savol topilmadi yoki o\'chirishda xatolik'
+                    'message' => 'Question not found or deletion error'
                 ], 404);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Savol muvaffaqiyatli o\'chirildi'
+                'message' => 'Question deleted successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Xatolik yuz berdi: ' . $e->getMessage()
+                'message' => 'An error occurred: ' . $e->getMessage()
             ], 500);
         }
     }
