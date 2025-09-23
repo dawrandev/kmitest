@@ -19,12 +19,6 @@ class StudentSeeder extends Seeder
                 'phone' => '933651302',
                 'address' => 'Nokis',
             ],
-            [
-                'user_id' => 2,
-                'full_name' => 'Aydos Oralbaev',
-                'phone' => '933651302',
-                'address' => 'Nokis',
-            ]
         ];
 
         foreach ($students as $student) {

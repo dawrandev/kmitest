@@ -61,21 +61,21 @@
                                                 <div class="col-md-4 text-center">
                                                     <div class="cke_tpl_stat">
                                                         <i data-feather="help-circle" style="width: 32px; height: 32px;" class="text-primary mb-2"></i>
-                                                        <div class="fw-bold fs-4">20</div>
+                                                        <div class="fw-bold fs-4">10</div>
                                                         <div class="text-muted">{{ __('Number of questions') }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 text-center">
                                                     <div class="cke_tpl_stat">
                                                         <i data-feather="clock" style="width: 32px; height: 32px;" class="text-success mb-2"></i>
-                                                        <div class="fw-bold fs-4">25</div>
+                                                        <div class="fw-bold fs-4">15</div>
                                                         <div class="text-muted">{{ __('Minutes') }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 text-center">
                                                     <div class="cke_tpl_stat">
                                                         <i data-feather="x-circle" style="width: 32px; height: 32px;" class="text-danger mb-2"></i>
-                                                        <div class="fw-bold fs-4">2</div>
+                                                        <div class="fw-bold fs-4">1</div>
                                                         <div class="text-muted">{{ __('Error Limit') }}</div>
                                                     </div>
                                                 </div>

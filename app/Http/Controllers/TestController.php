@@ -67,7 +67,7 @@ class TestController extends Controller
                 'student_id' => $student->id,
                 'language_id' => $languageId,
                 'started_at' => Carbon::now(),
-                'total_questions' => 20,
+                'total_questions' => 10,
                 'correct_answers' => 0,
                 'incorrect_answers' => 0
             ]);

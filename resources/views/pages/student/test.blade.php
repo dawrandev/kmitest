@@ -41,7 +41,7 @@
                                                                 id="progressCircle" stroke-dasharray="220" stroke-dashoffset="0" />
                                                         </svg>
                                                         <div class="timer-text">
-                                                            <span id="timerDisplay">25:00</span>
+                                                            <span id="timerDisplay">15:00</span>
                                                             <small>{{ __('Remaining') }}</small>
                                                         </div>
                                                     </div>
@@ -209,14 +209,26 @@
         </div>
     </div>
 </section>
+@vite(['resources/js/student/test.js'])
 @php
 $questionsData = $questions->map(function($question, $index) use ($language) {
 $translation = $question->translations->where('language_id', $language->id)->first();
+
+$answers = $question->answers->map(function($answer) use ($language) {
+$answerTranslation = $answer->translations->where('language_id', $language->id)->first();
+return [
+'id' => $answer->id,
+'text' => $answerTranslation ? $answerTranslation->text : 'Answer text not found',
+'is_correct' => $answer->is_correct
+];
+});
+
 return [
 'id' => $question->id,
 'index' => $index,
 'text' => $translation ? $translation->text : 'Question text not found',
-'image' => $translation ? $translation->image : null
+'image' => $translation ? $translation->image : null,
+'answers' => $answers // BU QATOR QO'SHILSIN
 ];
 })->values();
 
@@ -224,7 +236,7 @@ $testData = [
 'sessionId' => $testSession->id,
 'languageId' => $language->id,
 'totalQuestions' => count($questions),
-'timeLimit' => 25 * 60,
+'timeLimit' => 15 * 60,
 'startTime' => strtotime($testSession->started_at) * 1000, // JS uchun ms format
 'csrfToken' => csrf_token(),
 'routes' => [
@@ -256,9 +268,14 @@ $translations = [
 
 @endphp
 <script>
-    window.questions = @json($questionsData);
-    window.testData = @json($testData);
-    window.translations = @json($translations);
+    document.addEventListener('DOMContentLoaded', function() {
+        window.questions = @json($questionsData);
+        window.testData = @json($testData);
+        window.translations = @json($translations);
+
+        console.log("Window o'zgaruvchilari set qilindi:");
+        console.log("Questions:", window.questions);
+        console.log("TestData:", window.testData);
+    });
 </script>
-@vite(['resources/js/student/test.js'])
 @endsection

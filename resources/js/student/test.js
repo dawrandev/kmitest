@@ -46,15 +46,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let currentQuestionId = questions.length > 0 ? questions[0].id : 0;
+    let currentQuestionIndex = 0; // Yangi: hozirgi savol indeksi
     let selectedAnswers = {};
     let completedQuestions = 0;
+    let answeredQuestions = new Set(); // Javob berilgan savollar ro'yxati
 
     let totalTimeInSeconds =
         typeof testData.timeLimit !== "undefined" &&
         !isNaN(Number(testData.timeLimit)) &&
         Number(testData.timeLimit) > 0
             ? Number(testData.timeLimit)
-            : 25 * 60;
+            : 15 * 60;
     let remainingTime = totalTimeInSeconds;
     let timerInterval;
     let isTimerActive = true;
@@ -72,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 circumference = 2 * Math.PI * 35;
             }
-            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}   `;
             progressCircle.style.strokeDashoffset = 0;
             progressCircle.style.transition = "stroke-dashoffset 1s linear";
         }
@@ -120,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         isTimerActive = false;
         testFinished = true;
 
+        // Barcha savollarning javob variantlarini bloklash
         document.querySelectorAll(".variant-card").forEach((card) => {
             card.style.pointerEvents = "none";
             card.classList.add("disabled");
@@ -139,6 +142,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(() => finishTest(true));
     }
 
+    function setupNavigationButtons() {
+        console.log("setupNavigationButtons ishga tushdi");
+
+        // Har bir nav tugmani alohida topish va event qo'shish
+        const navButtons = document.querySelectorAll(".nav-btn");
+        console.log("Topilgan tugmalar soni:", navButtons.length);
+
+        navButtons.forEach(function (button, index) {
+            console.log(`Tugma ${index + 1}:`, button);
+
+            // Click event qo'shish
+            button.onclick = function (e) {
+                e.preventDefault();
+                console.log("TUGMA BOSILDI!", this);
+
+                if (testFinished) return;
+
+                const questionId = parseInt(this.dataset.questionId);
+                console.log("Question ID:", questionId);
+
+                // Barcha tugmalardan current olib tashlash
+                document.querySelectorAll(".nav-btn").forEach((btn) => {
+                    btn.classList.remove("current");
+                });
+
+                // Bu tugmani current qilish
+                this.classList.add("current");
+
+                // Question index topish
+                const questionIndex = questions.findIndex(
+                    (q) => q.id === questionId
+                );
+                console.log("Question index:", questionIndex);
+
+                if (questionIndex !== -1) {
+                    currentQuestionIndex = questionIndex;
+                    currentQuestionId = questionId;
+                    showQuestion(questionId, questionIndex + 1);
+                }
+            };
+
+            console.log(`Tugma ${index + 1} ga event qo'shildi`);
+        });
+
+        console.log("setupNavigationButtons tugadi");
+    }
     document.querySelectorAll(".variant-card").forEach(function (card) {
         card.addEventListener("click", function (e) {
             if (!isTimerActive || testFinished) return;
@@ -247,6 +296,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleAnswerResult(questionId, isCorrect, submitBtn) {
         if (testFinished) return;
 
+        // Javob berilgan savolni belgilash
+        answeredQuestions.add(questionId);
+
         const navBtn = document.getElementById(`navBtn${questionId}`);
         if (navBtn) {
             navBtn.classList.remove("current");
@@ -264,6 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Faqat joriy savol uchun variant-cardlarni bloklash
         const questionContainer = document.getElementById(
             `question-${questionId}`
         );
@@ -287,27 +340,22 @@ document.addEventListener("DOMContentLoaded", function () {
                   )}`;
         }
 
+        // Javob berilgandan keyin avtomatik keyingi savolga o'tish (ixtiyoriy)
+        // Bu qismni vaqtincha olib tashlayabmiz, foydalanuvchi o'zi navigatsiya qilsin
+        /*
         setTimeout(() => {
-            const allQuestions = Array.from(
-                document.querySelectorAll(".question-container")
-            );
-            const currentIndex = allQuestions.findIndex((q) =>
-                q.classList.contains("active")
-            );
-
-            if (completedQuestions >= allQuestions.length) {
+            if (completedQuestions >= questions.length) {
                 clearInterval(timerInterval);
                 isTimerActive = false;
                 finishTest();
-            } else if (currentIndex < allQuestions.length - 1) {
-                const nextQuestion = allQuestions[currentIndex + 1];
-                const nextQuestionId = parseInt(
-                    nextQuestion.id.replace("question-", ""),
-                    10
-                );
-                showQuestion(nextQuestionId, currentIndex + 2);
+            } else if (currentQuestionIndex < questions.length - 1) {
+                // Avtomatik keyingi savolga o'tish
+                currentQuestionIndex++;
+                const nextQuestionId = questions[currentQuestionIndex].id;
+                showQuestion(nextQuestionId, currentQuestionIndex + 1);
             }
         }, 1500);
+        */
     }
 
     function updateProgress() {
@@ -326,7 +374,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function setupFinishButton() {
-        const finishBtn = document.getElementById("finishTestBtn");
+        // Class selector yoki id selector bilan finish tugmasini topish
+        const finishBtn = document.querySelector(".btn-danger, #finishTestBtn");
         if (finishBtn) finishBtn.addEventListener("click", handleFinishClick);
         return finishBtn;
     }
@@ -352,33 +401,63 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showQuestion(questionId, questionNumber) {
+        console.log(`showQuestion: ID=${questionId}, Number=${questionNumber}`);
+
         if (testFinished) return;
 
-        document
-            .querySelectorAll(".question-container")
-            .forEach((q) => q.classList.remove("active"));
+        // Barcha savollarni yashirish
+        const allQuestions = document.querySelectorAll(".question-container");
+        console.log("Barcha savollar soni:", allQuestions.length);
+
+        allQuestions.forEach((q) => q.classList.remove("active"));
+
+        // Kerakli savolni ko'rsatish
         const targetQuestion = document.getElementById(
             `question-${questionId}`
         );
-        if (targetQuestion) targetQuestion.classList.add("active");
+        console.log("Target question:", targetQuestion);
 
-        document
-            .querySelectorAll(".nav-btn")
-            .forEach((btn) => btn.classList.remove("current"));
-        const navBtn = document.getElementById(`navBtn${questionId}`);
-        if (
-            navBtn &&
-            !navBtn.classList.contains("correct") &&
-            !navBtn.classList.contains("incorrect")
-        ) {
-            navBtn.classList.add("current");
+        if (targetQuestion) {
+            targetQuestion.classList.add("active");
+            console.log(`Question ${questionId} active qilindi`);
+        } else {
+            console.error(`Question ${questionId} topilmadi!`);
         }
 
+        // Global o'zgaruvchilarni yangilash
         currentQuestionId = questionId;
+        const questionIndex = questions.findIndex((q) => q.id === questionId);
+        if (questionIndex !== -1) {
+            currentQuestionIndex = questionIndex;
+        }
+
+        // Question numberni yangilash
         const currentQuestionElement =
             document.getElementById("currentQuestion");
-        if (currentQuestionElement)
+        if (currentQuestionElement) {
             currentQuestionElement.textContent = questionNumber;
+            console.log(`Question number ${questionNumber} ga o'zgartirildi`);
+        }
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById("prevQuestionBtn");
+        const nextBtn = document.getElementById("nextQuestionBtn");
+
+        if (prevBtn) {
+            prevBtn.disabled = currentQuestionIndex === 0 || testFinished;
+            prevBtn.style.display =
+                currentQuestionIndex === 0 ? "none" : "inline-block";
+        }
+
+        if (nextBtn) {
+            nextBtn.disabled =
+                currentQuestionIndex === questions.length - 1 || testFinished;
+            nextBtn.style.display =
+                currentQuestionIndex === questions.length - 1
+                    ? "none"
+                    : "inline-block";
+        }
     }
 
     function finishTest(isAutomatic = false) {
@@ -387,6 +466,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearInterval(timerInterval);
         isTimerActive = false;
+
+        // Test tugaganda barcha navigatsiyani bloklash
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+            btn.disabled = true;
+            btn.style.pointerEvents = "none";
+        });
 
         if (!testData || !testData.routes || !testData.routes.finish) {
             Swal.fire({
@@ -481,12 +566,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Global funksiyalar
     window.showQuestion = showQuestion;
     window.finishTest = finishTest;
 
+    // Boshlanish
     startTimer();
-    if (questions.length > 0) showQuestion(questions[0].id, 1);
+    if (questions.length > 0) {
+        showQuestion(questions[0].id, 1);
+    }
+
+    // Tugmalarni sozlash
     setTimeout(() => {
         setupFinishButton();
+        setupNavigationButtons();
+        updateNavigationButtons();
     }, 500);
 });
