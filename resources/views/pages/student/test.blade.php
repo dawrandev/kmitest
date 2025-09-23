@@ -209,26 +209,14 @@
         </div>
     </div>
 </section>
-@vite(['resources/js/student/test.js'])
 @php
 $questionsData = $questions->map(function($question, $index) use ($language) {
 $translation = $question->translations->where('language_id', $language->id)->first();
-
-$answers = $question->answers->map(function($answer) use ($language) {
-$answerTranslation = $answer->translations->where('language_id', $language->id)->first();
-return [
-'id' => $answer->id,
-'text' => $answerTranslation ? $answerTranslation->text : 'Answer text not found',
-'is_correct' => $answer->is_correct
-];
-});
-
 return [
 'id' => $question->id,
 'index' => $index,
 'text' => $translation ? $translation->text : 'Question text not found',
-'image' => $translation ? $translation->image : null,
-'answers' => $answers // BU QATOR QO'SHILSIN
+'image' => $translation ? $translation->image : null
 ];
 })->values();
 
@@ -268,14 +256,9 @@ $translations = [
 
 @endphp
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        window.questions = @json($questionsData);
-        window.testData = @json($testData);
-        window.translations = @json($translations);
-
-        console.log("Window o'zgaruvchilari set qilindi:");
-        console.log("Questions:", window.questions);
-        console.log("TestData:", window.testData);
-    });
+    window.questions = @json($questionsData);
+    window.testData = @json($testData);
+    window.translations = @json($translations);
 </script>
+@vite(['resources/js/student/test.js'])
 @endsection

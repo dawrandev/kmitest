@@ -142,52 +142,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(() => finishTest(true));
     }
 
+    // Navigation tugmalari uchun event listener
     function setupNavigationButtons() {
-        console.log("setupNavigationButtons ishga tushdi");
+        // Previous button
+        const prevBtn = document.getElementById("prevQuestionBtn");
+        if (prevBtn) {
+            prevBtn.addEventListener("click", function () {
+                if (currentQuestionIndex > 0 && !testFinished) {
+                    currentQuestionIndex--;
+                    const prevQuestionId = questions[currentQuestionIndex].id;
+                    showQuestion(prevQuestionId, currentQuestionIndex + 1);
+                }
+            });
+        }
 
-        // Har bir nav tugmani alohida topish va event qo'shish
-        const navButtons = document.querySelectorAll(".nav-btn");
-        console.log("Topilgan tugmalar soni:", navButtons.length);
+        // Next button
+        const nextBtn = document.getElementById("nextQuestionBtn");
+        if (nextBtn) {
+            nextBtn.addEventListener("click", function () {
+                if (
+                    currentQuestionIndex < questions.length - 1 &&
+                    !testFinished
+                ) {
+                    currentQuestionIndex++;
+                    const nextQuestionId = questions[currentQuestionIndex].id;
+                    showQuestion(nextQuestionId, currentQuestionIndex + 1);
+                }
+            });
+        }
 
-        navButtons.forEach(function (button, index) {
-            console.log(`Tugma ${index + 1}:`, button);
+        // Question navigation buttons (1, 2, 3, ...)
+        document.querySelectorAll(".nav-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                if (testFinished) return; // Test tugaganda navigation ishlamasin
 
-            // Click event qo'shish
-            button.onclick = function (e) {
-                e.preventDefault();
-                console.log("TUGMA BOSILDI!", this);
-
-                if (testFinished) return;
-
-                const questionId = parseInt(this.dataset.questionId);
-                console.log("Question ID:", questionId);
-
-                // Barcha tugmalardan current olib tashlash
-                document.querySelectorAll(".nav-btn").forEach((btn) => {
-                    btn.classList.remove("current");
-                });
-
-                // Bu tugmani current qilish
-                this.classList.add("current");
-
-                // Question index topish
+                const questionId = parseInt(this.dataset.questionId, 10);
                 const questionIndex = questions.findIndex(
                     (q) => q.id === questionId
                 );
-                console.log("Question index:", questionIndex);
-
                 if (questionIndex !== -1) {
                     currentQuestionIndex = questionIndex;
-                    currentQuestionId = questionId;
                     showQuestion(questionId, questionIndex + 1);
                 }
-            };
-
-            console.log(`Tugma ${index + 1} ga event qo'shildi`);
+            });
         });
-
-        console.log("setupNavigationButtons tugadi");
     }
+
     document.querySelectorAll(".variant-card").forEach(function (card) {
         card.addEventListener("click", function (e) {
             if (!isTimerActive || testFinished) return;
@@ -340,9 +340,6 @@ document.addEventListener("DOMContentLoaded", function () {
                   )}`;
         }
 
-        // Javob berilgandan keyin avtomatik keyingi savolga o'tish (ixtiyoriy)
-        // Bu qismni vaqtincha olib tashlayabmiz, foydalanuvchi o'zi navigatsiya qilsin
-        /*
         setTimeout(() => {
             if (completedQuestions >= questions.length) {
                 clearInterval(timerInterval);
@@ -355,7 +352,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 showQuestion(nextQuestionId, currentQuestionIndex + 1);
             }
         }, 1500);
-        */
     }
 
     function updateProgress() {
@@ -401,42 +397,64 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showQuestion(questionId, questionNumber) {
-        console.log(`showQuestion: ID=${questionId}, Number=${questionNumber}`);
-
         if (testFinished) return;
 
-        // Barcha savollarni yashirish
-        const allQuestions = document.querySelectorAll(".question-container");
-        console.log("Barcha savollar soni:", allQuestions.length);
+        // Hamma savollarni yashirish
+        document
+            .querySelectorAll(".question-container")
+            .forEach((q) => q.classList.remove("active"));
 
-        allQuestions.forEach((q) => q.classList.remove("active"));
-
-        // Kerakli savolni ko'rsatish
+        // Ko'rsatiladigan savolni faollashtirish
         const targetQuestion = document.getElementById(
             `question-${questionId}`
         );
-        console.log("Target question:", targetQuestion);
+        if (targetQuestion) targetQuestion.classList.add("active");
 
-        if (targetQuestion) {
-            targetQuestion.classList.add("active");
-            console.log(`Question ${questionId} active qilindi`);
-        } else {
-            console.error(`Question ${questionId} topilmadi!`);
+        // Navigation tugmalarni yangilash
+        document
+            .querySelectorAll(".nav-btn")
+            .forEach((btn) => btn.classList.remove("current"));
+
+        const navBtn = document.getElementById(`navBtn${questionId}`);
+        if (navBtn) {
+            // Agar javob berilmagan bo'lsa, current qilish
+            if (
+                !navBtn.classList.contains("correct") &&
+                !navBtn.classList.contains("incorrect")
+            ) {
+                navBtn.classList.add("current");
+            }
         }
 
         // Global o'zgaruvchilarni yangilash
         currentQuestionId = questionId;
-        const questionIndex = questions.findIndex((q) => q.id === questionId);
-        if (questionIndex !== -1) {
-            currentQuestionIndex = questionIndex;
-        }
 
-        // Question numberni yangilash
+        // Question number ni yangilash
         const currentQuestionElement =
             document.getElementById("currentQuestion");
         if (currentQuestionElement) {
             currentQuestionElement.textContent = questionNumber;
-            console.log(`Question number ${questionNumber} ga o'zgartirildi`);
+        }
+
+        updateNavigationButtons();
+
+        if (selectedAnswers[questionId]) {
+            const selectedAnswerId = selectedAnswers[questionId];
+            const questionContainer = document.getElementById(
+                `question-${questionId}`
+            );
+            if (questionContainer) {
+                const selectedCard = questionContainer.querySelector(
+                    `[data-answer-id="${selectedAnswerId}"]`
+                );
+                if (selectedCard) {
+                    selectedCard.classList.add("selected");
+                    const radioInput = questionContainer.querySelector(
+                        `input[value="${selectedAnswerId}"]`
+                    );
+                    if (radioInput) radioInput.checked = true;
+                }
+            }
         }
     }
 
@@ -467,7 +485,6 @@ document.addEventListener("DOMContentLoaded", function () {
         clearInterval(timerInterval);
         isTimerActive = false;
 
-        // Test tugaganda barcha navigatsiyani bloklash
         document.querySelectorAll(".nav-btn").forEach((btn) => {
             btn.disabled = true;
             btn.style.pointerEvents = "none";
@@ -566,17 +583,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Global funksiyalar
     window.showQuestion = showQuestion;
     window.finishTest = finishTest;
 
-    // Boshlanish
     startTimer();
     if (questions.length > 0) {
         showQuestion(questions[0].id, 1);
     }
 
-    // Tugmalarni sozlash
     setTimeout(() => {
         setupFinishButton();
         setupNavigationButtons();
