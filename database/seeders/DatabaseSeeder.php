@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             LanguageSeeder::class,
+            FacultySeeder::class,
+            GroupSeeder::class,
             // QuestionSeeder::class,
             // QuestionTranslationSeeder::class,
             // AnswerSeeder::class,

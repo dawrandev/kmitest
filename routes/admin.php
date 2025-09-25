@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FacultyController;
+use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\AuthController;
@@ -32,6 +34,28 @@ Route::middleware('auth', 'admin')->group(function () {
                 Route::put('/{question}', 'update')->name('update');
                 Route::delete('/{question}', 'destroy')->name('destroy');
                 Route::get('/{question}/show', 'show')->name('show');
+            });
+        });
+
+        Route::controller(FacultyController::class)->group(function () {
+            Route::prefix('faculties')->as('faculties.')->group(function () {
+                Route::get('/index', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/{faculty}/edit', 'edit')->name('edit');
+                Route::put('/{faculty}', 'update')->name('update');
+                Route::delete('/{faculty}', 'destroy')->name('destroy');
+            });
+        });
+
+        Route::controller(GroupController::class)->group(function () {
+            Route::prefix('groups')->as('groups.')->group(function () {
+                Route::get('/index', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/{group}/edit', 'edit')->name('edit');
+                Route::put('/{group}', 'update')->name('update');
+                Route::delete('/{group}', 'destroy')->name('destroy');
             });
         });
 

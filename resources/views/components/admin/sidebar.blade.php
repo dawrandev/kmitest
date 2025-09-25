@@ -27,6 +27,20 @@
                             <li><a href="{{ route('admin.questions.create') }}">{{__('Question and Answers')}}</a></li>
                         </ul>
                     </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="grid"></i><span>{{__('Faculties')}}</span></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="{{ route('admin.faculties.index') }}">{{__('All Faculties')}}</a></li>
+                            <li><a href="{{ route('admin.faculties.create') }}">{{__('Create Faculty')}}</a></li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="layers"></i><span>{{__('Groups')}}</span></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="{{ route('admin.groups.index') }}">{{__('All Groups')}}</a></li>
+                            <li><a href="{{ route('admin.groups.create') }}">{{__('Create Group')}}</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

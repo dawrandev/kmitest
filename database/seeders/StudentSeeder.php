@@ -17,7 +17,6 @@ class StudentSeeder extends Seeder
                 'user_id' => 2,
                 'full_name' => 'Dawranbek Sipatdinov',
                 'phone' => '933651302',
-                'address' => 'Nokis',
             ],
         ];
 

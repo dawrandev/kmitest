@@ -16,15 +16,15 @@ class LanguageSeeder extends Seeder
         $languages = [
             [
                 'name' => 'Каракалпак',
-                'code' => 'КК'
+                'code' => 'kk'
             ],
             [
                 'name' => 'Узбек',
-                'code' => 'Уз'
+                'code' => 'uz'
             ],
             [
                 'name' => 'Русский',
-                'code' => 'Ру'
+                'code' => 'ru'
             ]
         ];
         foreach ($languages as $language) {

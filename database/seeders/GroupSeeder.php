@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Group;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,9 +14,12 @@ class GroupSeeder extends Seeder
     public function run(): void
     {
         $groups = [
-            'name' => '1'
+            'faculty_id' => 1,
+            'name' => 308
         ];
 
-        \App\Models\Group::create($groups);
+        foreach ($groups as $group) {
+            Group::create($group);
+        }
     }
 }

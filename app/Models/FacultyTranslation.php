@@ -4,17 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Group extends Model
+class FacultyTranslation extends Model
 {
-    protected $fillable = [
+    protected $fillable =
+    [
         'faculty_id',
-        'name',
+        'language_id',
+        'name'
     ];
-
-    public function students()
-    {
-        return $this->hasMany(Student::class);
-    }
 
     public function faculty()
     {

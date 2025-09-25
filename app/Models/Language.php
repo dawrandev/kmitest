@@ -25,4 +25,9 @@ class Language extends Model
     {
         return $this->hasMany(TestSession::class);
     }
+
+    public function faculties()
+    {
+        return $this->hasMany(FacultyTranslation::class);
+    }
 }

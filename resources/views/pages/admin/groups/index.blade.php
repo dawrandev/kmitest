@@ -1,69 +1,70 @@
 @extends('layouts.admin.main')
-@section('title', __('Students'))
+@section('title', __('Groups'))
 @section('content')
-<x-admin.breadcrumb :title="__('All Students')">
-    <a href="{{ route('admin.students.create') }}" class="btn btn-primary">
+<x-admin.breadcrumb :title="__('All Groups')">
+    <a href="{{ route('admin.groups.create') }}" class="btn btn-primary">
         <i class="icofont icofont-plus"></i>
-        {{ __('Add Student') }}
+        {{ __('Add Group') }}
     </a>
 </x-admin.breadcrumb>
 
 <div class="container-fluid">
     <div class="row">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <form method="GET" action="{{ route('admin.groups.index') }}">
+                    <div class="input-group">
+                        <select name="faculty_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">{{ __('All Faculties') }}</option>
+                            @foreach(getFaculties() as $faculty)
+                            <option value="{{ $faculty->id }}"
+                                {{ request('faculty_id') == $faculty->id ? 'selected' : '' }}>
+                                {{ optional($faculty->translations->first())->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                        @if(request('faculty_id'))
+                        <a href="{{ route('admin.groups.index') }}" class="btn btn-outline-secondary">
+                            {{ __('Reset') }}
+                        </a>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
 
-                    <!-- Students Table -->
+                    <!-- Groups Table -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="studentsTable">
+                        <table class="table table-hover" id="groupsTable">
                             <thead>
                                 <tr>
                                     <th>№</th>
-                                    <th>{{ __('Full Name') }}</th>
-                                    <th>{{ __('Phone') }}</th>
-                                    <th>{{ __('Group') }}</th>
+                                    <th>{{ __('Name') }}</th>
                                     <th>{{ __('Faculty') }}</th>
-                                    <th>{{ __('Registered') }}</th>
                                     <th>{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($students as $student)
+                                @forelse($groups as $group)
                                 <tr>
-                                    <td>{{ $students->firstItem() + $loop->index }}</td>
+                                    <td>{{ $groups->firstItem() + $loop->index }}</td>
                                     <td>
-                                        <span class="f-w-500">{{ $student->full_name }}</span>
-                                    </td>
-                                    <td>
-                                        @if($student->phone)
-                                        <span class="badge bg-primary">{{ $student->phone }}</span>
-                                        @else
-                                        <span class="text-muted f-12">{{ __('No phone') }}</span>
-                                        @endif
+                                        <span class="f-w-500">{{ $group->name }}</span>
                                     </td>
                                     <td>
                                         <span class="badge bg-info">
-                                            {{ $student->group->name ?? __('Not specified') }}
+                                            {{ optional($group->faculty->translations->firstWhere('language_id', currentLanguageId()))->name }}
                                         </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">
-                                            {{ optional($student->group->faculty->translations->firstWhere('language_id', currentLanguageId()))->name ?? __('Not specified') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span>{{ $student->created_at->format('d/m/Y') }}</span>
                                     </td>
                                     <td class="text align-middle">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ route('admin.students.show', $student) }}" class="btn btn-outline-info px-2 py-1">
-                                                <i class="icon-eye"></i>
-                                            </a>
-                                            <a href="{{ route('admin.students.edit', $student) }}" class="btn btn-outline-warning px-2 py-1">
+                                            <a href="{{ route('admin.groups.edit', $group) }}" class="btn btn-outline-warning px-2 py-1">
                                                 <i class="icon-pencil"></i>
                                             </a>
-                                            <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="d-inline delete-form">
+                                            <form action="{{ route('admin.groups.destroy', $group) }}" method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="btn btn-outline-danger delete-btn px-2 py-1">
@@ -75,28 +76,27 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted">
-                                        <i class="icofont icofont-search"></i> {{ __('No students found') }}
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <i class="icofont icofont-search"></i> {{ __('No groups found') }}
                                     </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
                     <br>
 
                     <!-- Pagination -->
-                    @if($students->hasPages())
+                    @if($groups->hasPages())
                     <div class="row">
                         <div class="col-md-6">
                             <div class="dataTables_info">
-                                {{ __('Showing') }} {{ $students->firstItem() }} {{ __('to') }} {{ $students->lastItem() }} {{ __('of') }} {{ $students->total() }} {{ __('entries') }}
+                                {{ __('Showing') }} {{ $groups->firstItem() }} {{ __('to') }} {{ $groups->lastItem() }} {{ __('of') }} {{ $groups->total() }} {{ __('entries') }}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="dataTables_paginate paging_simple_numbers float-end">
-                                {{ $students->links() }}
+                                {{ $groups->links() }}
                             </div>
                         </div>
                     </div>
@@ -133,5 +133,4 @@
     });
 </script>
 @endpush
-
 @endsection

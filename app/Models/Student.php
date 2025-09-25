@@ -12,14 +12,24 @@ class Student extends Authenticatable
 
     protected $fillable = [
         'user_id',
+        'group_id',
         'full_name',
         'phone',
-        'address',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function faculty()
+    {
+        return $this->group->faculty();
     }
 
     public function testSessions()
