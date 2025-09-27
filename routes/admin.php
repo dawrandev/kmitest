@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\FacultyController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\TopicController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,28 @@ Route::middleware('auth', 'admin')->group(function () {
                 Route::get('/{group}/edit', 'edit')->name('edit');
                 Route::put('/{group}', 'update')->name('update');
                 Route::delete('/{group}', 'destroy')->name('destroy');
+            });
+        });
+
+        Route::controller(SubjectController::class)->group(function () {
+            Route::prefix('subjects')->as('subjects.')->group(function () {
+                Route::get('/index', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/{subject}/edit', 'edit')->name('edit');
+                Route::put('/{subject}', 'update')->name('update');
+                Route::delete('/{subject}', 'destroy')->name('destroy');
+            });
+        });
+
+        Route::controller(TopicController::class)->group(function () {
+            Route::prefix('topics')->as('topics.')->group(function () {
+                Route::get('/index', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/{topic}/edit', 'edit')->name('edit');
+                Route::put('/{topic}', 'update')->name('update');
+                Route::delete('/{topic}', 'destroy')->name('destroy');
             });
         });
 

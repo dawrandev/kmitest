@@ -48,6 +48,18 @@
     "src": "resources/js/admin/questions/index.js",
     "isEntry": true
   },
+  "resources/js/admin/students/create.js": {
+    "file": "assets/create-7s6k3F34.js",
+    "name": "create",
+    "src": "resources/js/admin/students/create.js",
+    "isEntry": true
+  },
+  "resources/js/admin/students/edit.js": {
+    "file": "assets/edit-B7AsMzCM.js",
+    "name": "edit",
+    "src": "resources/js/admin/students/edit.js",
+    "isEntry": true
+  },
   "resources/js/admin/students/index.js": {
     "file": "assets/index-DvqUCrlc.js",
     "name": "index",

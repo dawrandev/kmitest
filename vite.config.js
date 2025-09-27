@@ -10,6 +10,9 @@ export default defineConfig({
                 "resources/js/alert.js",
 
                 "resources/js/admin/students/index.js",
+                "resources/js/admin/students/edit.js",
+                "resources/js/admin/students/create.js",
+
                 "resources/js/admin/questions/index.js",
                 "resources/js/admin/questions/edit.js",
                 "resources/js/admin/questions/create.js",

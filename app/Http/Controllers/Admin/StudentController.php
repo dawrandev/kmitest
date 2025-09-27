@@ -16,11 +16,9 @@ class StudentController extends Controller
 
     public function index(Request $request)
     {
-        $students = $this->studentService->getStudents($request->query());
+        $filters = $request->only(['search', 'faculty_id', 'group_id', 'per_page']);
 
-        if ($request->ajax()) {
-            return view('partials.admin.students.students_table', compact('students'))->render();
-        }
+        $students = $this->studentService->getAllStudents($filters);
 
         return view('pages.admin.students.index', compact('students'));
     }

@@ -15,6 +15,7 @@ class StudentSeeder extends Seeder
         $students = [
             [
                 'user_id' => 2,
+                'group_id' => 1,
                 'full_name' => 'Dawranbek Sipatdinov',
                 'phone' => '933651302',
             ],

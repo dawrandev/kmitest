@@ -203,7 +203,6 @@ class QuestionRepository
             return $translation->image;
         }
 
-        // Agar translation mavjud bo'lsa lekin rasm yo'q yoki default rasm bo'lsa
         if ($translation) {
             $translation->update(['image' => self::DEFAULT_IMAGE_PATH]);
         }

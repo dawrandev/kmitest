@@ -12,10 +12,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout')->middleware('auth');
 });
 
-Route::get('/test403', function () {
-    abort(403);
-});
-
 
 Route::get('lang/{locale}', function ($locale) {
     if (array_key_exists($locale, config('app.locales'))) {

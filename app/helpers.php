@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Group;
 use App\Models\Language;
 
 if (!function_exists('getLanguages')) {
@@ -24,5 +25,18 @@ if (!function_exists('getFaculties')) {
     function getFaculties()
     {
         return \App\Models\Faculty::with('translations')->get();
+    }
+}
+
+if (!function_exists('getGroups')) {
+    function getGroups()
+    {
+        return Group::all();
+    }
+}
+if (!function_exists('getSubjects')) {
+    function getSubjects()
+    {
+        return \App\Models\Subject::with('translations')->get();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StudentUpdateRequest extends FormRequest
 {
@@ -19,34 +20,45 @@ class StudentUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
     public function rules(): array
     {
         return [
-            'login' => 'required|min:8',
-            'password' => 'required|min:8|confirmed',
-            'full_name' => 'required',
-            'phone' => 'required|numeric|digits:9',
-            'address' => 'required',
+            'faculty_id' => ['required', 'exists:faculties,id'],
+            'group_id'   => [
+                'required',
+                'exists:groups,id',
+                function ($attribute, $value, $fail) {
+                    $facultyId = $this->input('faculty_id');
+                    if ($facultyId && !\App\Models\Group::where('id', $value)->where('faculty_id', $facultyId)->exists()) {
+                        $fail(__('The selected group does not belong to the chosen faculty.'));
+                    }
+                },
+            ],
+            'full_name'  => ['required', 'string', 'max:255'],
+            'phone'      => ['nullable', 'string', 'max:20'],
+            'login'      => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'login')->ignore($this->student->user_id ?? null),
+            ],
+            'password'   => ['nullable', 'string', 'min:6', 'confirmed'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'login.required'   => __('Login maydoni majburiy.'),
-            'login.min'        => __('Login kamida :min ta belgidan iborat bo‘lishi kerak.'),
-
-            'password.required'  => __('Parol maydoni majburiy.'),
-            'password.min'       => __('Parol kamida :min ta belgidan iborat bo‘lishi kerak.'),
-            'password.confirmed' => __('Parol tasdiqlash bilan mos kelmadi.'),
-
-            'full_name.required' => __('To‘liq ism maydoni majburiy.'),
-
-            'phone.required' => __('Telefon raqami majburiy.'),
-            'phone.numeric'  => __('Telefon raqami faqat raqamlardan iborat bo‘lishi kerak.'),
-            'phone.digits'   => __('Telefon raqami aniq :digits ta raqamdan iborat bo‘lishi kerak.'),
-
-            'address.required' => __('Manzil maydoni majburiy.'),
+            'faculty_id.required' => __('Faculty is required'),
+            'faculty_id.exists'   => __('Selected faculty is invalid'),
+            'group_id.required'   => __('Group is required'),
+            'group_id.exists'     => __('Selected group is invalid'),
+            'full_name.required'  => __('Full name is required'),
+            'login.required'      => __('Login is required'),
+            'login.unique'        => __('This login is already taken'),
+            'password.min'        => __('Password must be at least 6 characters'),
+            'password.confirmed'  => __('Passwords do not match'),
         ];
     }
 }

@@ -41,6 +41,20 @@
                             <li><a href="{{ route('admin.groups.create') }}">{{__('Create Group')}}</a></li>
                         </ul>
                     </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="book-open"></i><span>{{__('Subjects')}}</span></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="{{ route('admin.subjects.index') }}">{{__('All Subjects')}}</a></li>
+                            <li><a href="{{ route('admin.subjects.create') }}">{{__('Create Subject')}}</a></li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="file-text"></i><span>{{__('Topics')}}</span></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="{{ route('admin.topics.index') }}">{{__('All Topic')}}</a></li>
+                            <li><a href="{{ route('admin.topics.create') }}">{{__('Create Subject')}}</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

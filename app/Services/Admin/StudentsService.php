@@ -11,16 +11,9 @@ class StudentsService
     {
         // 
     }
-    public function getStudents(array $filters)
+    public function getAllStudents(array $filters)
     {
-        $allowedPerPage = [1, 5, 10, 25, 50, 100];
-
-        $perPage = $filters['per_page'] ?? 10;
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
-
-        return $this->studentRepository->search($filters, $perPage);
+        return $this->studentRepository->getFilteredStudents($filters);
     }
 
     public function createStudent($data)

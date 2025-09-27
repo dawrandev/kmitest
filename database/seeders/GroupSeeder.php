@@ -14,8 +14,10 @@ class GroupSeeder extends Seeder
     public function run(): void
     {
         $groups = [
-            'faculty_id' => 1,
-            'name' => 308
+            [
+                'faculty_id' => 1,
+                'name' => 308
+            ],
         ];
 
         foreach ($groups as $group) {

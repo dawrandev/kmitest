@@ -22,32 +22,36 @@ class StudentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => 'required|min:8',
-            'password' => 'required|min:8|confirmed',
-            'full_name' => 'required',
-            'phone' => 'required|numeric|digits:9|unique:students,phone',
-            'address' => 'required',
+            'faculty_id' => ['required', 'exists:faculties,id'],
+            'group_id' => ['required', 'exists:groups,id'],
+            'full_name' => ['required', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'login' => ['required', 'string', 'max:50', 'unique:users,login'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'login.required' => 'Login kiritilishi shart.',
-            'login.min' => 'Login kamida 8 ta belgidan iborat bo‘lishi kerak.',
+            'faculty_id.required' => __('Faculty is required.'),
+            'faculty_id.exists' => __('Selected faculty does not exist.'),
 
-            'password.required' => 'Parol kiritilishi shart.',
-            'password.min' => 'Parol kamida 8 ta belgidan iborat bo‘lishi kerak.',
-            'password.confirmed' => 'Parol tasdiqlash bilan mos kelmadi.',
+            'group_id.required' => __('Group is required.'),
+            'group_id.exists' => __('Selected group does not exist.'),
 
-            'full_name.required' => 'To‘liq ism kiritilishi shart.',
+            'full_name.required' => __('Full name is required.'),
+            'full_name.max' => __('Full name may not be greater than 255 characters.'),
 
-            'phone.required' => 'Telefon raqami kiritilishi shart.',
-            'phone.numeric' => 'Telefon raqami faqat raqamlardan iborat bo‘lishi kerak.',
-            'phone.digits' => 'Telefon raqami 9 ta raqamdan iborat bo‘lishi kerak.',
-            'phone.unique' => 'Bu telefon raqami allaqachon ro‘yxatdan o‘tgan.',
+            'phone.max' => __('Phone number may not be greater than 20 characters.'),
 
-            'address.required' => 'Manzil kiritilishi shart.',
+            'login.required' => __('Login is required.'),
+            'login.unique' => __('This login is already taken.'),
+            'login.max' => __('Login may not be greater than 50 characters.'),
+
+            'password.required' => __('Password is required.'),
+            'password.min' => __('Password must be at least 6 characters.'),
+            'password.confirmed' => __('Password confirmation does not match.'),
         ];
     }
 }

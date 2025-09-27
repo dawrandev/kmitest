@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             LanguageSeeder::class,
             FacultySeeder::class,
             GroupSeeder::class,
+            SubjectSeeder::class,
+            TopicSeeder::class,
             // QuestionSeeder::class,
             // QuestionTranslationSeeder::class,
             // AnswerSeeder::class,

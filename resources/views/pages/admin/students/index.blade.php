@@ -14,6 +14,57 @@
             <div class="card">
                 <div class="card-body">
 
+                    <!-- Filters -->
+                    <form method="GET" action="{{ route('admin.students.index') }}" class="row g-2 mb-3">
+                        {{-- Search --}}
+                        <div class="col-md-3">
+                            <input type="text" name="search" class="form-control"
+                                placeholder="{{ __('Search by name or phone...') }}"
+                                value="{{ request('search') }}">
+                        </div>
+
+                        {{-- Faculty filter --}}
+                        <div class="col-md-3">
+                            <select name="faculty_id" class="form-select">
+                                <option value="">{{ __('All Faculties') }}</option>
+                                @foreach(getFaculties() as $faculty)
+                                <option value="{{ $faculty->id }}" {{ request('faculty_id') == $faculty->id ? 'selected' : '' }}>
+                                    {{ optional($faculty->translations->firstWhere('language_id', currentLanguageId()))->name ?? $faculty->id }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Group filter --}}
+                        <div class="col-md-3">
+                            <select name="group_id" class="form-select">
+                                <option value="">{{ __('All Groups') }}</option>
+                                @foreach(getGroups() as $group)
+                                <option value="{{ $group->id }}" {{ request('group_id') == $group->id ? 'selected' : '' }}>
+                                    {{ $group->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Per page --}}
+                        <div class="col-md-2">
+                            <select name="per_page" class="form-select">
+                                @foreach([10,25,50,100] as $size)
+                                <option value="{{ $size }}" {{ request('per_page', 10) == $size ? 'selected' : '' }}>
+                                    {{ $size }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-secondary w-100">
+                                <i class="icofont icofont-filter"></i>
+                            </button>
+                        </div>
+                    </form>
+
                     <!-- Students Table -->
                     <div class="table-responsive">
                         <table class="table table-hover" id="studentsTable">
@@ -96,7 +147,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="dataTables_paginate paging_simple_numbers float-end">
-                                {{ $students->links() }}
+                                {{ $students->withQueryString()->links() }}
                             </div>
                         </div>
                     </div>
